@@ -113,16 +113,14 @@ body {
 .grid-container {
   display: grid;
   grid-template: repeat(10, var(--sz-square)) / repeat(10, var(--sz-square));
-  border-right: 1px solid var(--clr-surface-a40);
-  border-bottom: 1px solid var(--clr-surface-a40);
+  gap: 1px;
+  background-color: var(--clr-surface-a20);
   margin: 16px 8px;
+  padding: 1px;
 }
 
 .square {
-  border-top: 1px solid var(--clr-surface-a40);
-  border-left: 1px solid var(--clr-surface-a40);
-  font-size: 10px;
-  text-align: center;
+  background-color: var(--clr-surface-a0);
   width: var(--sz-square);
   height: var(--sz-square);
 }
@@ -131,10 +129,137 @@ body {
   background-color: lightgreen;
 }
 
-.hit {
-  background-color: red;
+/* carrier (vertical) */
+.grid-container :nth-child(1 of .carrier.vertical) {
+  border-top: 3px solid green;
 }
 
-.miss {
-  background-color: lightgray;
+.carrier.vertical {
+  border-right: 3px solid green;
+  border-left: 3px solid green;
+}
+
+.grid-container :nth-child(5 of .carrier.vertical) {
+  border-bottom: 3px solid green;
+}
+/* carrier (horizontal) */
+.grid-container :nth-child(1 of .carrier.horizontal) {
+  border-left: 3px solid green;
+}
+
+.carrier.horizontal {
+  border-top: 3px solid green;
+  border-bottom: 3px solid green;
+}
+
+.grid-container :nth-child(5 of .carrier.horizontal) {
+  border-right: 3px solid green;
+}
+
+/* battleship (vertical) */
+.grid-container :nth-child(1 of .battleship.vertical) {
+  border-top: 3px solid green;
+}
+
+.battleship.vertical {
+  border-right: 3px solid green;
+  border-left: 3px solid green;
+}
+
+.grid-container :nth-child(5 of .battleship.vertical) {
+  border-bottom: 3px solid green;
+}
+/* battleship (horizontal) */
+.grid-container :nth-child(1 of .battleship.horizontal) {
+  border-left: 3px solid green;
+}
+
+.battleship.horizontal {
+  border-top: 3px solid green;
+  border-bottom: 3px solid green;
+}
+
+.grid-container :nth-child(4 of .battleship.horizontal) {
+  border-right: 3px solid green;
+}
+
+/* destroyer (vertical) */
+.grid-container :nth-child(1 of .destroyer.vertical) {
+  border-top: 3px solid green;
+}
+
+.destroyer.vertical {
+  border-right: 3px solid green;
+  border-left: 3px solid green;
+}
+
+.grid-container :nth-child(3 of .destroyer.vertical) {
+  border-bottom: 3px solid green;
+}
+/* destroyer (horizontal) */
+.grid-container :nth-child(1 of .destroyer.horizontal) {
+  border-left: 3px solid green;
+}
+
+.destroyer.horizontal {
+  border-top: 3px solid green;
+  border-bottom: 3px solid green;
+}
+
+.grid-container :nth-child(3 of .destroyer.horizontal) {
+  border-right: 3px solid green;
+}
+
+/* submarine (vertical) */
+.grid-container :nth-child(1 of .submarine.vertical) {
+  border-top: 3px solid green;
+}
+
+.submarine.vertical {
+  border-right: 3px solid green;
+  border-left: 3px solid green;
+}
+
+.grid-container :nth-child(3 of .submarine.vertical) {
+  border-bottom: 3px solid green;
+}
+/* submarine (horizontal) */
+.grid-container :nth-child(1 of .submarine.horizontal) {
+  border-left: 3px solid green;
+}
+
+.submarine.horizontal {
+  border-top: 3px solid green;
+  border-bottom: 3px solid green;
+}
+
+.grid-container :nth-child(3 of .submarine.horizontal) {
+  border-right: 3px solid green;
+}
+
+/* patrol-boat (vertical) */
+.grid-container :nth-child(1 of .patrol-boat.vertical) {
+  border-top: 3px solid green;
+}
+
+.patrol-boat.vertical {
+  border-right: 3px solid green;
+  border-left: 3px solid green;
+}
+
+.grid-container :nth-child(2 of .patrol-boat.vertical) {
+  border-bottom: 3px solid green;
+}
+/* patrol-boat (horizontal) */
+.grid-container :nth-child(1 of .patrol-boat.horizontal) {
+  border-left: 3px solid green;
+}
+
+.patrol-boat.horizontal {
+  border-top: 3px solid green;
+  border-bottom: 3px solid green;
+}
+
+.grid-container :nth-child(2 of .patrol-boat.horizontal) {
+  border-right: 3px solid green;
 }

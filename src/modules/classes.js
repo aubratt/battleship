@@ -3,19 +3,13 @@ const DIRECTION = {
   VERTICAL: "vertical",
 };
 
-// Carrier: 5
-// Battleship: 4
-// Destroyer: 3
-// Submarine: 3
-// Patrol Boat: 2
-
-// Board Size: 10 x 10
-
 export class Ship {
-  constructor(length, hitCount, sunk) {
+  constructor(name, length) {
+    this.name = name;
+    this.direction;
     this.length = length;
-    this.hitCount = hitCount;
-    this.sunk = sunk;
+    this.hitCount = 0;
+    this.sunk = false;
   }
 
   hit() {
@@ -29,9 +23,9 @@ export class Ship {
 }
 
 export class Gameboard {
-  constructor(width = 10, height = 10) {
-    this.width = width;
-    this.height = height;
+  constructor() {
+    this.width = 10;
+    this.height = 10;
     this.board = this.createBoard();
     this.ships = this.createShips();
     this.allShipsSunk = false;
@@ -51,11 +45,11 @@ export class Gameboard {
   }
 
   createShips() {
-    const carrier = new Ship(5, 0, false);
-    const battleship = new Ship(4, 0, false);
-    const destroyer = new Ship(3, 0, false);
-    const submarine = new Ship(3, 0, false);
-    const patrolBoat = new Ship(2, 0, false);
+    const carrier = new Ship("carrier", 5);
+    const battleship = new Ship("battleship", 4);
+    const destroyer = new Ship("destroyer", 3);
+    const submarine = new Ship("submarine", 3);
+    const patrolBoat = new Ship("patrol-boat", 2);
 
     return {
       carrier: carrier,
@@ -66,8 +60,8 @@ export class Gameboard {
     };
   }
 
-  placeShip(ship, x, y, direction) {
-    if (direction === DIRECTION.HORIZONTAL) {
+  placeShip(ship, x, y) {
+    if (ship.direction === DIRECTION.HORIZONTAL) {
       for (let i = 0; i < ship.length; i++) {
         this.board[x][y] = ship;
         x++;
@@ -81,9 +75,8 @@ export class Gameboard {
   }
 
   placeAllShipsRandomly() {
-    for (const [key, value] of Object.entries(this.ships)) {
-      // randomly determine ship direction
-      const randomDir =
+    for (const [key, ship] of Object.entries(this.ships)) {
+      ship.direction =
         getRandomInteger(1) < 1 ? DIRECTION.HORIZONTAL : DIRECTION.VERTICAL;
 
       let xMax;
@@ -91,8 +84,8 @@ export class Gameboard {
       let xRandom;
       let yRandom;
 
-      if (randomDir === DIRECTION.HORIZONTAL) {
-        xMax = this.width - value.length;
+      if (ship.direction === DIRECTION.HORIZONTAL) {
+        xMax = this.width - ship.length;
         yMax = this.height - 1;
         xRandom = -1;
 
@@ -100,27 +93,27 @@ export class Gameboard {
           xRandom = getRandomInteger(xMax);
           yRandom = getRandomInteger(yMax);
 
-          for (let i = xRandom; i < xRandom + value.length; i++) {
+          for (let i = xRandom; i < xRandom + ship.length; i++) {
             if (this.board[i][yRandom] !== 0) xRandom = -1;
             if (xRandom === -1) break;
           }
         }
       } else {
         xMax = this.width - 1;
-        yMax = this.height - value.length;
+        yMax = this.height - ship.length;
         yRandom = -1;
 
         while (yRandom === -1) {
           xRandom = getRandomInteger(xMax);
           yRandom = getRandomInteger(yMax);
 
-          for (let i = yRandom; i < yRandom + value.length; i++) {
+          for (let i = yRandom; i < yRandom + ship.length; i++) {
             if (this.board[xRandom][i] !== 0) yRandom = -1;
             if (yRandom === -1) break;
           }
         }
       }
-      this.placeShip(value, xRandom, yRandom, randomDir);
+      this.placeShip(ship, xRandom, yRandom);
     }
   }
 
@@ -133,8 +126,8 @@ export class Gameboard {
   }
 
   checkIfAllShipsSunk() {
-    for (const [key, value] of Object.entries(this.ships)) {
-      if (value.sunk === false) return;
+    for (const [key, ship] of Object.entries(this.ships)) {
+      if (ship.sunk === false) return;
     }
     this.allShipsSunk = true;
   }
