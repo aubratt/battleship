@@ -1,12 +1,4 @@
-import _ from "lodash";
-import "./style.css";
+import "./styles.css";
+import { buildGameboard } from "./modules/page-builder";
 
-function component() {
-  const element = document.createElement("div");
-
-  element.textContent = "Template";
-
-  return element;
-}
-
-document.body.appendChild(component());
+buildGameboard();

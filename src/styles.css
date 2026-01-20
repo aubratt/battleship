@@ -1,0 +1,127 @@
+/* CSS Reset 
+https://www.joshwcomeau.com/css/custom-css-reset/ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* root */
+:root {
+  /** Base colors */
+  --clr-dark-a0: #000000;
+  --clr-light-a0: #ffffff;
+
+  /** Theme primary colors */
+  --clr-primary-a0: #649fed;
+  --clr-primary-a10: #79a9ef;
+  --clr-primary-a20: #8cb3f1;
+  --clr-primary-a30: #9ebef4;
+  --clr-primary-a40: #afc8f6;
+  --clr-primary-a50: #bfd3f8;
+
+  /** Theme surface colors */
+  --clr-surface-a0: #1b1e24;
+  --clr-surface-a10: #303338;
+  --clr-surface-a20: #46494e;
+  --clr-surface-a30: #5e6065;
+  --clr-surface-a40: #77797d;
+  --clr-surface-a50: #909295;
+
+  /** Success colors */
+  --clr-success-a0: #22946e;
+  --clr-success-a10: #47d5a6;
+  --clr-success-a20: #9ae8ce;
+
+  /** Warning colors */
+  --clr-warning-a0: #a87a2a;
+  --clr-warning-a10: #d7ac61;
+  --clr-warning-a20: #ecd7b2;
+
+  /** Danger colors */
+  --clr-danger-a0: #9c2121;
+  --clr-danger-a10: #d94a4a;
+  --clr-danger-a20: #eb9e9e;
+
+  /* Square size */
+  --sz-square: 32px;
+}
+
+/* body */
+body {
+  display: flex;
+  justify-content: center;
+  background-color: var(--clr-surface-a0);
+  color: var(--clr-light-a0);
+}
+
+/* gameboard */
+.grid-container {
+  display: grid;
+  grid-template: repeat(10, var(--sz-square)) / repeat(10, var(--sz-square));
+  border-right: 1px solid var(--clr-surface-a40);
+  border-bottom: 1px solid var(--clr-surface-a40);
+}
+
+.square {
+  border-top: 1px solid var(--clr-surface-a40);
+  border-left: 1px solid var(--clr-surface-a40);
+  font-size: 10px;
+  text-align: center;
+  width: var(--sz-square);
+  height: var(--sz-square);
+}
