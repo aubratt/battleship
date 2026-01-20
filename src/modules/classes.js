@@ -66,15 +66,15 @@ export class Gameboard {
     };
   }
 
-  placeShip(ship, x, y, direction) {
+  placeShip([shipName, ship], x, y, direction) {
     if (direction === DIRECTION.HORIZONTAL) {
       for (let i = 0; i < ship.length; i++) {
-        this.board[x][y] = ship;
+        this.board[x][y] = [shipName, ship];
         x++;
       }
     } else {
       for (let i = 0; i < ship.length; i++) {
-        this.board[x][y] = ship;
+        this.board[x][y] = [shipName, ship];
         y++;
       }
     }
@@ -120,7 +120,7 @@ export class Gameboard {
           }
         }
       }
-      this.placeShip(value, xRandom, yRandom, randomDir);
+      this.placeShip([key, value], xRandom, yRandom, randomDir);
     }
   }
 

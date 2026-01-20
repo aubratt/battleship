@@ -1,4 +1,2 @@
 import "./styles.css";
-import { buildGameboard } from "./modules/page-builder";
-
-buildGameboard();
+import "./modules/game-controller";

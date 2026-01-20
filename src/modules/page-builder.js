@@ -1,19 +1,30 @@
 import * as el from "./element-factory";
-import { Gameboard } from "./classes";
 
-export function buildGameboard() {
-  const gameboard = new Gameboard();
-  // build grid container
+export function buildGameboard(player) {
+  const boardLetter = player.human ? "a" : "b";
   const container = el.newGridContainer();
-  // build grid squares
-  gameboard.board.forEach((col, y) => {
+  player.gameboard.board.forEach((col, y) => {
     col.forEach((space, x) => {
       const square = el.newSquare();
-      square.id = `row-${x}-col-${y}`;
-      square.textContent = `(${x}, ${y})`;
+      square.id = `${boardLetter}-row-${x}-col-${y}`;
       container.appendChild(square);
     });
   });
   document.body.appendChild(container);
-  // place ships
 }
+
+export function buildShips(player) {
+  const boardLetter = player.human ? "a" : "b";
+  player.gameboard.board.forEach((col, y) => {
+    col.forEach((space, x) => {
+      if (player.gameboard.board[x][y] !== 0) {
+        const square = document.getElementById(
+          `${boardLetter}-row-${x}-col-${y}`
+        );
+        square.classList.add(`${player.gameboard.board[x][y][0]}`, "not-hit");
+      }
+    });
+  });
+}
+
+
