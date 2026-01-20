@@ -13,18 +13,30 @@ export function buildGameboard(player) {
   document.body.appendChild(container);
 }
 
-export function buildShips(player) {
-  const boardLetter = player.human ? "a" : "b";
+export function buildHumanShips(player) {
   player.gameboard.board.forEach((col, y) => {
     col.forEach((space, x) => {
       if (player.gameboard.board[x][y] !== 0) {
-        const square = document.getElementById(
-          `${boardLetter}-row-${x}-col-${y}`
-        );
+        const square = document.getElementById(`a-row-${x}-col-${y}`);
         square.classList.add(`${player.gameboard.board[x][y][0]}`, "not-hit");
       }
     });
   });
 }
 
-
+export function buildCpuShips(player) {
+  player.gameboard.board.forEach((col, y) => {
+    col.forEach((space, x) => {
+      const square = document.getElementById(`b-row-${x}-col-${y}`);
+      square.addEventListener("click", function handleSquareClick() {
+        if (player.gameboard.board[x][y] === 0) {
+          player.gameboard.board[x][y] = 1;
+          square.classList.add("miss");
+        } else if (player.gameboard.board[x][y] !== 1) {
+          square.classList.add("hit");
+        }
+        square.removeEventListener("click", handleSquareClick);
+      });
+    });
+  });
+}

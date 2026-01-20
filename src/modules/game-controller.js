@@ -1,5 +1,5 @@
 import { Player } from "./classes";
-import { buildGameboard, buildShips } from "./page-builder";
+import { buildHumanShips, buildCpuShips, buildGameboard } from "./page-builder";
 
 let humanPlayer = new Player(true);
 let cpuPlayer = new Player(false);
@@ -10,4 +10,5 @@ buildGameboard(cpuPlayer);
 humanPlayer.gameboard.placeAllShipsRandomly();
 cpuPlayer.gameboard.placeAllShipsRandomly();
 
-buildShips(humanPlayer);
+buildHumanShips(humanPlayer);
+buildCpuShips(cpuPlayer);
