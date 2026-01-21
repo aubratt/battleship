@@ -1,5 +1,9 @@
 import { Player } from "./classes";
-import { displayHumanGameboard } from "./page-builder";
+import {
+  displayCpuGameboard,
+  displayHumanGameboard,
+  handleHumanTurn,
+} from "./page-builder";
 
 export function startNewGame() {
   const humanPlayer = new Player(true);
@@ -9,6 +13,9 @@ export function startNewGame() {
   cpuPlayer.gameboard.placeAllShipsRandomly();
 
   displayHumanGameboard(humanPlayer);
+  displayCpuGameboard(cpuPlayer);
+
+  handleHumanTurn(humanPlayer, cpuPlayer);
 }
 
 startNewGame();
