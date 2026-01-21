@@ -25,6 +25,7 @@ export function displayHumanGameboard(player) {
           playerBoard[x][y].direction,
           "not-hit",
         );
+      gridSquare.id = `hs-${x}-${y}`;
       gridContainer.appendChild(gridSquare);
     });
   });
@@ -55,6 +56,8 @@ export function handleHumanTurn(humanPlayer, cpuPlayer) {
   const turnIndicator = gridContainer.querySelector(".turn-indicator");
   const cpuBoard = cpuPlayer.gameboard.board;
 
+  turnIndicator.textContent = "";
+
   gridContainer.addEventListener("click", function handleClick(event) {
     if (
       event.target.classList.contains("turn-indicator") ||
@@ -71,11 +74,11 @@ export function handleHumanTurn(humanPlayer, cpuPlayer) {
       boardSquare = 1;
       gridSquare.classList.add("miss");
       gridContainer.removeEventListener("click", handleClick);
-      handleCpuTurn(humanPlayer);
+      turnIndicator.textContent = "CPU's Turn";
+      handleCpuTurn(humanPlayer, cpuPlayer);
     } else if (boardSquare !== 1 && !gridSquare.classList.contains("hit")) {
       boardSquare.hit();
       gridSquare.classList.add("hit", boardSquare.name);
-      turnIndicator.textContent = `You hit CPU's ${boardSquare.name}`;
 
       if (boardSquare.sunk) {
         cpuBoard.forEach((row, x) => {
@@ -83,17 +86,61 @@ export function handleHumanTurn(humanPlayer, cpuPlayer) {
             if (square.name === boardSquare.name) {
               const shipGridSquare = document.getElementById(`cs-${x}-${y}`);
               shipGridSquare.classList.add(square.direction, "sunk");
-              turnIndicator.textContent = `You sunk CPU's ${boardSquare.name}`;
             }
           });
         });
       }
       gridContainer.removeEventListener("click", handleClick);
-      handleCpuTurn(humanPlayer);
+      turnIndicator.textContent = "CPU's Turn";
+      handleCpuTurn(humanPlayer, cpuPlayer);
     }
   });
 }
 
-function handleCpuTurn(humanPlayer) {
-  const x = getRandomInteger(9);
+function handleCpuTurn(humanPlayer, cpuPlayer) {
+  const gridContainer = document.getElementById("human-grid-container");
+  const turnIndicator = gridContainer.querySelector(".turn-indicator");
+  const humanBoard = humanPlayer.gameboard.board;
+
+  turnIndicator.textContent = "";
+
+  setTimeout(() => {
+    let x = getRandomInteger(9);
+    let y = getRandomInteger(9);
+
+    while (
+      humanBoard[x][y] === 1 ||
+      document.getElementById(`hs-${x}-${y}`).classList.contains("hit")
+    ) {
+      x = getRandomInteger(9);
+      y = getRandomInteger(9);
+    }
+
+    let boardSquare = humanBoard[x][y];
+    const gridSquare = document.getElementById(`hs-${x}-${y}`);
+
+    if (boardSquare === 0) {
+      boardSquare = 1;
+      gridSquare.classList.add("miss");
+      turnIndicator.textContent = "Your Turn";
+      handleHumanTurn(humanPlayer, cpuPlayer);
+    } else {
+      boardSquare.hit();
+      gridSquare.classList.remove("not-hit");
+      gridSquare.classList.add("hit");
+
+      if (boardSquare.sunk) {
+        humanBoard.forEach((row, x) => {
+          row.forEach((square, y) => {
+            if (square.name === boardSquare.name) {
+              const shipGridSquare = document.getElementById(`hs-${x}-${y}`);
+              shipGridSquare.classList.add("sunk");
+            }
+          });
+        });
+      }
+      turnIndicator.textContent = "Your Turn";
+      handleHumanTurn(humanPlayer, cpuPlayer);
+    }
+  }, 1000);
 }

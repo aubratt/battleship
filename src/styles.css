@@ -166,6 +166,11 @@ body {
   background-color: var(--clr-hit-bg);
 }
 
+#human-grid-container .horizontal.hit {
+  border-top: 3px solid var(--clr-not-hit-border);
+  border-bottom: 3px solid var(--clr-not-hit-border);
+}
+
 .sunk {
   background-color: var(--clr-sunk-bg);
 }
