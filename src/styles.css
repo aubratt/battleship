@@ -144,12 +144,37 @@ body {
   height: var(--sz-square);
 }
 
+/* not hit (human only) */
 .not-hit {
   background-color: var(--clr-not-hit-bg);
 }
 
+#human-grid-container :nth-child(1 of .carrier.vertical):not(.sunk),
+#human-grid-container :nth-child(1 of .battleship.vertical):not(.sunk),
+#human-grid-container :nth-child(1 of .destroyer.vertical):not(.sunk),
+#human-grid-container :nth-child(1 of .submarine.vertical):not(.sunk),
+#human-grid-container :nth-child(1 of .patrol-boat.vertical):not(.sunk) {
+  border-top: 3px solid var(--clr-not-hit-border);
+}
+
 .not-hit.vertical {
   border-right: 3px solid var(--clr-not-hit-border);
+  border-left: 3px solid var(--clr-not-hit-border);
+}
+
+#human-grid-container :nth-child(5 of .carrier.vertical):not(.sunk),
+#human-grid-container :nth-child(4 of .battleship.vertical):not(.sunk),
+#human-grid-container :nth-child(3 of .destroyer.vertical):not(.sunk),
+#human-grid-container :nth-child(3 of .submarine.vertical):not(.sunk),
+#human-grid-container :nth-child(2 of .patrol-boat.vertical):not(.sunk) {
+  border-bottom: 3px solid var(--clr-not-hit-border);
+}
+
+#human-grid-container :nth-child(1 of .carrier.horizontal):not(.sunk),
+#human-grid-container :nth-child(1 of .battleship.horizontal):not(.sunk),
+#human-grid-container :nth-child(1 of .destroyer.horizontal):not(.sunk),
+#human-grid-container :nth-child(1 of .submarine.horizontal):not(.sunk),
+#human-grid-container :nth-child(1 of .patrol-boat.horizontal):not(.sunk) {
   border-left: 3px solid var(--clr-not-hit-border);
 }
 
@@ -158,25 +183,67 @@ body {
   border-bottom: 3px solid var(--clr-not-hit-border);
 }
 
+#human-grid-container :nth-child(5 of .carrier.horizontal):not(.sunk),
+#human-grid-container :nth-child(4 of .battleship.horizontal):not(.sunk),
+#human-grid-container :nth-child(3 of .destroyer.horizontal):not(.sunk),
+#human-grid-container :nth-child(3 of .submarine.horizontal):not(.sunk),
+#human-grid-container :nth-child(2 of .patrol-boat.horizontal):not(.sunk) {
+  border-right: 3px solid var(--clr-not-hit-border);
+}
+
+/* miss (human and cpu) */
 .miss {
   background-color: var(--clr-surface-a10);
 }
 
+/* hit (human and cpu) */
 .hit {
   background-color: var(--clr-hit-bg);
 }
 
+/* hit (human only) */
 #human-grid-container .horizontal.hit {
   border-top: 3px solid var(--clr-not-hit-border);
   border-bottom: 3px solid var(--clr-not-hit-border);
 }
 
+#human-grid-container .vertical.hit {
+  border-left: 3px solid var(--clr-not-hit-border);
+  border-right: 3px solid var(--clr-not-hit-border);
+}
+
+/* sunk (human and cpu) */
 .sunk {
   background-color: var(--clr-sunk-bg);
 }
 
+#human-grid-container :nth-child(1 of destroyer.vertical.sunk),
+.grid-container :nth-child(1 of .carrier.vertical.sunk),
+.grid-container :nth-child(1 of .battleship.vertical.sunk),
+.grid-container :nth-child(1 of .destroyer.vertical.sunk),
+.grid-container :nth-child(1 of .submarine.vertical.sunk),
+.grid-container :nth-child(1 of .patrol-boat.vertical.sunk) {
+  border-top: 3px solid var(--clr-sunk-border);
+}
+
 .sunk.vertical {
   border-right: 3px solid var(--clr-sunk-border);
+  border-left: 3px solid var(--clr-sunk-border);
+}
+
+.grid-container :nth-child(5 of .carrier.vertical.sunk),
+.grid-container :nth-child(4 of .battleship.vertical.sunk),
+.grid-container :nth-child(3 of .destroyer.vertical.sunk),
+.grid-container :nth-child(3 of .submarine.vertical.sunk),
+.grid-container :nth-child(2 of .patrol-boat.vertical.sunk) {
+  border-bottom: 3px solid var(--clr-sunk-border);
+}
+
+.grid-container :nth-child(1 of .carrier.horizontal.sunk),
+.grid-container :nth-child(1 of .battleship.horizontal.sunk),
+.grid-container :nth-child(1 of .destroyer.horizontal.sunk),
+.grid-container :nth-child(1 of .submarine.horizontal.sunk),
+.grid-container :nth-child(1 of .patrol-boat.horizontal.sunk) {
   border-left: 3px solid var(--clr-sunk-border);
 }
 
@@ -185,167 +252,10 @@ body {
   border-bottom: 3px solid var(--clr-sunk-border);
 }
 
-/* carrier (vertical) */
-#human-grid-container :nth-child(1 of .carrier.vertical) {
-  border-top: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(5 of .carrier.vertical) {
-  border-bottom: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .carrier.vertical) {
-  border-top: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(5 of .carrier.vertical) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-/* carrier (horizontal) */
-#human-grid-container :nth-child(1 of .carrier.horizontal) {
-  border-left: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(5 of .carrier.horizontal) {
-  border-right: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .carrier.horizontal) {
-  border-left: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(5 of .carrier.horizontal) {
-  border-right: 3px solid var(--clr-sunk-border);
-}
-
-/* battleship (vertical) */
-#human-grid-container :nth-child(1 of .battleship.vertical) {
-  border-top: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(4 of .battleship.vertical) {
-  border-bottom: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .battleship.vertical) {
-  border-top: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(4 of .battleship.vertical) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-/* battleship (horizontal) */
-#human-grid-container :nth-child(1 of .battleship.horizontal) {
-  border-left: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(4 of .battleship.horizontal) {
-  border-right: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .battleship.horizontal) {
-  border-left: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(4 of .battleship.horizontal) {
-  border-right: 3px solid var(--clr-sunk-border);
-}
-
-/* destroyer (vertical) */
-#human-grid-container :nth-child(1 of .destroyer.vertical) {
-  border-top: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(3 of .destroyer.vertical) {
-  border-bottom: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .destroyer.vertical) {
-  border-top: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(3 of .destroyer.vertical) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-/* destroyer (horizontal) */
-#human-grid-container :nth-child(1 of .destroyer.horizontal) {
-  border-left: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(3 of .destroyer.horizontal) {
-  border-right: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .destroyer.horizontal) {
-  border-left: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(3 of .destroyer.horizontal) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-
-/* submarine (vertical) */
-#human-grid-container :nth-child(1 of .submarine.vertical) {
-  border-top: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(3 of .submarine.vertical) {
-  border-bottom: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .submarine.vertical) {
-  border-top: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(3 of .submarine.vertical) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-/* submarine (horizontal) */
-#human-grid-container :nth-child(1 of .submarine.horizontal) {
-  border-left: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(3 of .submarine.horizontal) {
-  border-right: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .submarine.horizontal) {
-  border-left: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(3 of .submarine.horizontal) {
-  border-right: 3px solid var(--clr-sunk-border);
-}
-
-/* patrol-boat (vertical) */
-#human-grid-container :nth-child(1 of .patrol-boat.vertical) {
-  border-top: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(2 of .patrol-boat.vertical) {
-  border-bottom: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .patrol-boat.vertical) {
-  border-top: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(2 of .patrol-boat.vertical) {
-  border-bottom: 3px solid var(--clr-sunk-border);
-}
-/* patrol-boat (horizontal) */
-#human-grid-container :nth-child(1 of .patrol-boat.horizontal) {
-  border-left: 3px solid var(--clr-not-hit-border);
-}
-
-#human-grid-container :nth-child(2 of .patrol-boat.horizontal) {
-  border-right: 3px solid var(--clr-not-hit-border);
-}
-
-#cpu-grid-container :nth-child(1 of .patrol-boat.horizontal) {
-  border-left: 3px solid var(--clr-sunk-border);
-}
-
-#cpu-grid-container :nth-child(2 of .patrol-boat.horizontal) {
+.grid-container :nth-child(5 of .carrier.horizontal.sunk),
+.grid-container :nth-child(4 of .battleship.horizontal.sunk),
+.grid-container :nth-child(3 of .destroyer.horizontal.sunk),
+.grid-container :nth-child(3 of .submarine.horizontal.sunk),
+.grid-container :nth-child(2 of .patrol-boat.horizontal.sunk) {
   border-right: 3px solid var(--clr-sunk-border);
 }

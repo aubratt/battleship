@@ -71,12 +71,16 @@ export function handleHumanTurn(humanPlayer, cpuPlayer) {
     let boardSquare = cpuBoard[x][y];
 
     if (boardSquare === 0) {
-      boardSquare = 1;
+      cpuBoard[x][y] = 1;
       gridSquare.classList.add("miss");
       gridContainer.removeEventListener("click", handleClick);
       turnIndicator.textContent = "CPU's Turn";
       handleCpuTurn(humanPlayer, cpuPlayer);
-    } else if (boardSquare !== 1 && !gridSquare.classList.contains("hit")) {
+    } else if (
+      boardSquare !== 1 &&
+      !gridSquare.classList.contains("hit") &&
+      !gridSquare.classList.contains("sunk")
+    ) {
       boardSquare.hit();
       gridSquare.classList.add("hit", boardSquare.name);
 
@@ -85,6 +89,7 @@ export function handleHumanTurn(humanPlayer, cpuPlayer) {
           row.forEach((square, y) => {
             if (square.name === boardSquare.name) {
               const shipGridSquare = document.getElementById(`cs-${x}-${y}`);
+              shipGridSquare.classList.remove("hit");
               shipGridSquare.classList.add(square.direction, "sunk");
             }
           });
@@ -110,7 +115,8 @@ function handleCpuTurn(humanPlayer, cpuPlayer) {
 
     while (
       humanBoard[x][y] === 1 ||
-      document.getElementById(`hs-${x}-${y}`).classList.contains("hit")
+      document.getElementById(`hs-${x}-${y}`).classList.contains("hit") ||
+      document.getElementById(`hs-${x}-${y}`).classList.contains("sunk")
     ) {
       x = getRandomInteger(9);
       y = getRandomInteger(9);
@@ -120,7 +126,7 @@ function handleCpuTurn(humanPlayer, cpuPlayer) {
     const gridSquare = document.getElementById(`hs-${x}-${y}`);
 
     if (boardSquare === 0) {
-      boardSquare = 1;
+      humanBoard[x][y] = 1;
       gridSquare.classList.add("miss");
       turnIndicator.textContent = "Your Turn";
       handleHumanTurn(humanPlayer, cpuPlayer);
@@ -134,6 +140,7 @@ function handleCpuTurn(humanPlayer, cpuPlayer) {
           row.forEach((square, y) => {
             if (square.name === boardSquare.name) {
               const shipGridSquare = document.getElementById(`hs-${x}-${y}`);
+              shipGridSquare.classList.remove("hit");
               shipGridSquare.classList.add("sunk");
             }
           });
