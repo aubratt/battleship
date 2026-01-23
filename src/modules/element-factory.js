@@ -10,8 +10,8 @@ export function newGridContainer() {
   return container;
 }
 
-export function newGridSquare() {
-  const square = document.createElement("div");
-  square.classList.add("square");
-  return square;
+export function newGridCell() {
+  const cell = document.createElement("div");
+  cell.classList.add("cell");
+  return cell;
 }

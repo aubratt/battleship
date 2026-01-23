@@ -34,10 +34,13 @@ export class Gameboard {
   createBoard() {
     let board = [];
 
-    for (let i = 0; i < this.width; i++) {
-      board[i] = [];
-      for (let j = 0; j < this.height; j++) {
-        board[i][j] = 0;
+    for (let row = 0; row < this.width; row++) {
+      board[row] = [];
+      for (let col = 0; col < this.height; col++) {
+        board[row][col] = {
+          ship: null,
+          hit: false,
+        };
       }
     }
 
@@ -60,16 +63,16 @@ export class Gameboard {
     };
   }
 
-  placeShip(ship, x, y) {
+  placeShip(ship, row, col) {
     if (ship.direction === DIRECTION.HORIZONTAL) {
       for (let i = 0; i < ship.length; i++) {
-        this.board[x][y] = ship;
-        x++;
+        this.board[row][col].ship = ship;
+        col++;
       }
     } else {
       for (let i = 0; i < ship.length; i++) {
-        this.board[x][y] = ship;
-        y++;
+        this.board[row][col].ship = ship;
+        row++;
       }
     }
   }
@@ -79,50 +82,57 @@ export class Gameboard {
       ship.direction =
         getRandomInteger(1) < 1 ? DIRECTION.HORIZONTAL : DIRECTION.VERTICAL;
 
-      let xMax;
-      let yMax;
-      let xRandom;
-      let yRandom;
+      let rowMax;
+      let colMax;
+      let rowRandom;
+      let colRandom;
 
       if (ship.direction === DIRECTION.HORIZONTAL) {
-        xMax = this.width - ship.length;
-        yMax = this.height - 1;
-        xRandom = -1;
+        rowMax = this.height - 1;
+        colMax = this.width - ship.length;
+        colRandom = -1;
 
-        while (xRandom === -1) {
-          xRandom = getRandomInteger(xMax);
-          yRandom = getRandomInteger(yMax);
+        while (colRandom === -1) {
+          rowRandom = getRandomInteger(rowMax);
+          colRandom = getRandomInteger(colMax);
 
-          for (let i = xRandom; i < xRandom + ship.length; i++) {
-            if (this.board[i][yRandom] !== 0) xRandom = -1;
-            if (xRandom === -1) break;
+          for (let i = colRandom; i < colRandom + ship.length; i++) {
+            if (this.board[rowRandom][i].ship) colRandom = -1;
+            if (colRandom === -1) break;
           }
         }
       } else {
-        xMax = this.width - 1;
-        yMax = this.height - ship.length;
-        yRandom = -1;
+        rowMax = this.height - ship.length;
+        colMax = this.width - 1;
+        rowRandom = -1;
 
-        while (yRandom === -1) {
-          xRandom = getRandomInteger(xMax);
-          yRandom = getRandomInteger(yMax);
+        while (rowRandom === -1) {
+          rowRandom = getRandomInteger(rowMax);
+          colRandom = getRandomInteger(colMax);
 
-          for (let i = yRandom; i < yRandom + ship.length; i++) {
-            if (this.board[xRandom][i] !== 0) yRandom = -1;
-            if (yRandom === -1) break;
+          for (let i = rowRandom; i < rowRandom + ship.length; i++) {
+            if (this.board[i][colRandom].ship) rowRandom = -1;
+            if (rowRandom === -1) break;
           }
         }
       }
-      this.placeShip(ship, xRandom, yRandom);
+      this.placeShip(ship, rowRandom, colRandom);
     }
   }
 
-  receiveAttack(x, y) {
-    if (this.board[x][y] === 0) this.board[x][y] = 1;
-    else if (this.board[x][y] !== 1) {
-      this.board[x][y].hit();
+  receiveAttack(row, col) {
+    const cell = this.board[row][col];
+
+    if (cell.hit) return { valid: false };
+
+    cell.hit = true;
+
+    if (cell.ship) {
+      cell.ship.hit();
       this.checkIfAllShipsSunk();
+      return { valid: true, hit: true };
     }
+    return { valid: true, hit: false };
   }
 
   checkIfAllShipsSunk() {

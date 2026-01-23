@@ -138,7 +138,7 @@ body {
   font-family: "Courier New", Courier, monospace;
 }
 
-.square {
+.cell {
   background-color: var(--clr-surface-a0);
   width: var(--sz-square);
   height: var(--sz-square);
@@ -217,7 +217,6 @@ body {
   background-color: var(--clr-sunk-bg);
 }
 
-#human-grid-container :nth-child(1 of destroyer.vertical.sunk),
 .grid-container :nth-child(1 of .carrier.vertical.sunk),
 .grid-container :nth-child(1 of .battleship.vertical.sunk),
 .grid-container :nth-child(1 of .destroyer.vertical.sunk),

@@ -1,153 +1,132 @@
 import { getRandomInteger } from "./classes";
 import {
   newGridContainer,
-  newGridSquare,
+  newGridCell,
   newTurnIndicator,
 } from "./element-factory";
 import "./game-controller";
 
-export function displayHumanGameboard(player) {
-  const gridContainer = newGridContainer();
-  const turnIndicator = newTurnIndicator();
+let humanGridContainer;
+let cpuGridContainer;
+let humanTurnIndicator;
+let cpuTurnIndicator;
 
-  gridContainer.id = "human-grid-container";
-  turnIndicator.textContent = "Your Turn";
+export function displayGameboard(player) {
+  const gridContainer = newGridContainer(player.human);
+  const turnIndicator = newTurnIndicator();
+  if (player.human) {
+    gridContainer.id = "human-grid-container";
+    humanGridContainer = gridContainer;
+    humanTurnIndicator = turnIndicator;
+    turnIndicator.textContent = "Your Turn";
+  } else {
+    gridContainer.id = "cpu-grid-container";
+    cpuGridContainer = gridContainer;
+    cpuTurnIndicator = turnIndicator;
+  }
   gridContainer.appendChild(turnIndicator);
 
   const playerBoard = player.gameboard.board;
-
-  playerBoard.forEach((col, y) => {
-    col.forEach((square, x) => {
-      const gridSquare = newGridSquare();
-      if (playerBoard[x][y] !== 0)
-        gridSquare.classList.add(
-          playerBoard[x][y].name,
-          playerBoard[x][y].direction,
-          "not-hit",
-        );
-      gridSquare.id = `hs-${x}-${y}`;
-      gridContainer.appendChild(gridSquare);
-    });
-  });
-  document.body.appendChild(gridContainer);
-}
-
-export function displayCpuGameboard(player) {
-  const gridContainer = newGridContainer();
-  const turnIndicator = newTurnIndicator();
-
-  gridContainer.id = "cpu-grid-container";
-  gridContainer.appendChild(turnIndicator);
-
-  const playerBoard = player.gameboard.board;
-
-  playerBoard.forEach((col, y) => {
-    col.forEach((square, x) => {
-      const gridSquare = newGridSquare();
-      gridSquare.id = `cs-${x}-${y}`;
-      gridContainer.appendChild(gridSquare);
+  playerBoard.forEach((row, rowNum) => {
+    row.forEach((cell, colNum) => {
+      const gridCell = newGridCell();
+      gridCell.setAttribute("data-row", rowNum);
+      gridCell.setAttribute("data-col", colNum);
+      if (player.human && cell.ship)
+        gridCell.classList.add(cell.ship.name, cell.ship.direction, "not-hit");
+      gridContainer.appendChild(gridCell);
     });
   });
   document.body.appendChild(gridContainer);
 }
 
 export function handleHumanTurn(humanPlayer, cpuPlayer) {
-  const gridContainer = document.getElementById("cpu-grid-container");
-  const turnIndicator = gridContainer.querySelector(".turn-indicator");
-  const cpuBoard = cpuPlayer.gameboard.board;
+  humanTurnIndicator.textContent = "Your Turn";
 
-  turnIndicator.textContent = "";
-
-  gridContainer.addEventListener("click", function handleClick(event) {
+  cpuGridContainer.addEventListener("click", function handleClick(event) {
     if (
       event.target.classList.contains("turn-indicator") ||
       event.target.classList.contains("grid-container")
     )
       return;
 
-    const gridSquare = event.target;
-    const x = Number(gridSquare.id.substring(3, 4));
-    const y = Number(gridSquare.id.substring(5, 6));
-    let boardSquare = cpuBoard[x][y];
+    const gridCell = event.target;
+    const row = Number(gridCell.dataset.row);
+    const col = Number(gridCell.dataset.col);
+    const attackResult = cpuPlayer.gameboard.receiveAttack(row, col);
 
-    if (boardSquare === 0) {
-      cpuBoard[x][y] = 1;
-      gridSquare.classList.add("miss");
-      gridContainer.removeEventListener("click", handleClick);
-      turnIndicator.textContent = "CPU's Turn";
-      handleCpuTurn(humanPlayer, cpuPlayer);
-    } else if (
-      boardSquare !== 1 &&
-      !gridSquare.classList.contains("hit") &&
-      !gridSquare.classList.contains("sunk")
-    ) {
-      boardSquare.hit();
-      gridSquare.classList.add("hit", boardSquare.name);
+    if (!attackResult.valid) return;
 
-      if (boardSquare.sunk) {
-        cpuBoard.forEach((row, x) => {
-          row.forEach((square, y) => {
-            if (square.name === boardSquare.name) {
-              const shipGridSquare = document.getElementById(`cs-${x}-${y}`);
-              shipGridSquare.classList.remove("hit");
-              shipGridSquare.classList.add(square.direction, "sunk");
-            }
-          });
-        });
-      }
-      gridContainer.removeEventListener("click", handleClick);
-      turnIndicator.textContent = "CPU's Turn";
-      handleCpuTurn(humanPlayer, cpuPlayer);
+    cpuGridContainer.removeEventListener("click", handleClick);
+
+    displayAttackResult(cpuPlayer, attackResult, cpuGridContainer, row, col);
+
+    if (cpuPlayer.gameboard.allShipsSunk) {
+      humanTurnIndicator.textContent = "You Win!";
+      return;
     }
+
+    humanTurnIndicator.textContent = "";
+    handleCpuTurn(humanPlayer, cpuPlayer);
   });
 }
 
 function handleCpuTurn(humanPlayer, cpuPlayer) {
-  const gridContainer = document.getElementById("human-grid-container");
-  const turnIndicator = gridContainer.querySelector(".turn-indicator");
-  const humanBoard = humanPlayer.gameboard.board;
-
-  turnIndicator.textContent = "";
+  cpuTurnIndicator.textContent = "CPU's Turn";
 
   setTimeout(() => {
-    let x = getRandomInteger(9);
-    let y = getRandomInteger(9);
+    let row = getRandomInteger(9);
+    let col = getRandomInteger(9);
+    let attackResult = humanPlayer.gameboard.receiveAttack(row, col);
 
-    while (
-      humanBoard[x][y] === 1 ||
-      document.getElementById(`hs-${x}-${y}`).classList.contains("hit") ||
-      document.getElementById(`hs-${x}-${y}`).classList.contains("sunk")
-    ) {
-      x = getRandomInteger(9);
-      y = getRandomInteger(9);
+    while (!attackResult.valid) {
+      row = getRandomInteger(9);
+      col = getRandomInteger(9);
+      attackResult = humanPlayer.gameboard.receiveAttack(row, col);
     }
 
-    let boardSquare = humanBoard[x][y];
-    const gridSquare = document.getElementById(`hs-${x}-${y}`);
+    displayAttackResult(
+      humanPlayer,
+      attackResult,
+      humanGridContainer,
+      row,
+      col,
+    );
 
-    if (boardSquare === 0) {
-      humanBoard[x][y] = 1;
-      gridSquare.classList.add("miss");
-      turnIndicator.textContent = "Your Turn";
-      handleHumanTurn(humanPlayer, cpuPlayer);
-    } else {
-      boardSquare.hit();
-      gridSquare.classList.remove("not-hit");
-      gridSquare.classList.add("hit");
-
-      if (boardSquare.sunk) {
-        humanBoard.forEach((row, x) => {
-          row.forEach((square, y) => {
-            if (square.name === boardSquare.name) {
-              const shipGridSquare = document.getElementById(`hs-${x}-${y}`);
-              shipGridSquare.classList.remove("hit");
-              shipGridSquare.classList.add("sunk");
-            }
-          });
-        });
-      }
-      turnIndicator.textContent = "Your Turn";
-      handleHumanTurn(humanPlayer, cpuPlayer);
+    if (humanPlayer.gameboard.allShipsSunk) {
+      cpuTurnIndicator.textContent = "CPU Wins";
+      return;
     }
+
+    cpuTurnIndicator.textContent = "";
+    handleHumanTurn(humanPlayer, cpuPlayer);
   }, 1000);
+}
+
+function displayAttackResult(player, result, gridContainer, row, col) {
+  const playerBoard = player.gameboard.board;
+  const boardCell = player.gameboard.board[row][col];
+  const gridCell = gridContainer.querySelector(
+    `[data-row="${row}"][data-col="${col}"]`,
+  );
+
+  if (result.hit) {
+    gridCell.classList.add("hit");
+    if (player.human) gridCell.classList.remove("not-hit");
+    else gridCell.classList.add(boardCell.ship.name);
+
+    if (boardCell.ship.sunk) {
+      playerBoard.forEach((row, rowNum) => {
+        row.forEach((cell, colNum) => {
+          if (cell.ship && boardCell.ship.name === cell.ship.name) {
+            const thisGridCell = gridContainer.querySelector(
+              `[data-row="${rowNum}"][data-col="${colNum}"]`,
+            );
+            thisGridCell.classList.remove("hit");
+            thisGridCell.classList.add(cell.ship.direction ,"sunk");
+          }
+        });
+      });
+    }
+  } else gridCell.classList.add("miss");
 }
