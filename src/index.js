@@ -1,2 +1,2 @@
 import "./styles.css";
-import "./modules/game-controller";
+import "./modules/page-builder";

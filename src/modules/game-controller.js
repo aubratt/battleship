@@ -1,17 +1,33 @@
-import { Player } from "./classes";
-import { displayGameboard, handleHumanTurn } from "./page-builder";
+export class Controller {
+  constructor(humanPlayer, cpuPlayer) {
+    this.humanPlayer = humanPlayer;
+    this.cpuPlayer = cpuPlayer;
+    this.currentTurn = humanPlayer;
+    this.turnNumber = 1;
+    this.gameOver = false;
+    this.winner = null;
+  }
 
-export function startNewGame() {
-  const humanPlayer = new Player(true);
-  const cpuPlayer = new Player(false);
+  processMove(enemy, row, col) {
+    return enemy.gameboard.receiveAttack(row, col);
+  }
 
-  humanPlayer.gameboard.placeAllShipsRandomly();
-  cpuPlayer.gameboard.placeAllShipsRandomly();
+  nextTurn() {
+    const humanWin = this.cpuPlayer.gameboard.allShipsSunk;
+    const cpuWin = this.humanPlayer.gameboard.allShipsSunk;
 
-  displayGameboard(humanPlayer);
-  displayGameboard(cpuPlayer);
+    if (humanWin || cpuWin) {
+      this.gameOver = true;
+      humanWin
+        ? (this.winner = this.humanPlayer)
+        : (this.winner = this.cpuPlayer);
+    }
 
-  handleHumanTurn(humanPlayer, cpuPlayer);
+    if (this.currentTurn === this.humanPlayer)
+      this.currentTurn = this.cpuPlayer;
+    else {
+      this.currentTurn = this.humanPlayer;
+      this.turnNumber++;
+    }
+  }
 }
-
-startNewGame();
