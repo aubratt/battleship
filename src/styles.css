@@ -111,31 +111,81 @@ h6 {
 /* body */
 body {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   background-color: var(--clr-surface-a0);
   color: var(--clr-light-a0);
+  font-family: "Courier New", Courier, monospace;
 }
 
-/* gameboard */
+h1 {
+  margin: 16px;
+}
+
+/* gameboards */
+#game-status {
+  background-color: var(--clr-surface-a50);
+  color: var(--clr-dark-a0);
+  border-radius: 8px;
+  text-align: center;
+  width: 734px;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+}
+
+#game-container {
+  display: grid;
+  grid-template: 24px 331px / 24px 331px repeat(2, 24px) 331px;
+}
+
+#human-col-label-container {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+#cpu-col-label-container {
+  grid-area: 1 / 5 / 2 / 6;
+}
+
+.col-label-container {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.col-label-char {
+  width: 33px;
+}
+
+#human-row-label-container {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+#cpu-row-label-container {
+  grid-area: 2 / 4 / 3 / 5;
+}
+
+.row-label-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+}
+
+#human-grid-container {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+#cpu-grid-container {
+  grid-area: 2 / 5 / 3 / 6;
+}
+
 .grid-container {
   display: grid;
-  grid-template: 32px repeat(10, var(--sz-square)) / repeat(
-      10,
-      var(--sz-square)
-    );
+  grid-template: repeat(10, var(--sz-square)) / repeat(10, var(--sz-square));
   gap: 1px;
   background-color: var(--clr-surface-a20);
-  margin: 16px 8px;
   padding: 1px;
-}
-
-.turn-indicator {
-  grid-area: 1 / 1 / 2 / 11;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--clr-surface-a0);
-  font-family: "Courier New", Courier, monospace;
 }
 
 .cell {

@@ -3,13 +3,18 @@ import { Controller } from "./game-controller";
 import {
   newGridContainer,
   newGridCell,
-  newTurnIndicator,
+  newRowLabelContainer,
+  newColLabelChar,
+  newColLabelContainer,
+  newRowLabelChar,
 } from "./element-factory";
 
+const CAPITALAINDEX = 65;
+
+const gameStatus = document.getElementById("game-status");
+const gameContainer = document.getElementById("game-container");
 let humanGridContainer;
-let humanTurnIndicator;
 let cpuGridContainer;
-let cpuTurnIndicator;
 
 startNewGame();
 
@@ -22,16 +27,42 @@ export function startNewGame() {
   cpuPlayer.gameboard.placeAllShipsRandomly();
 
   humanGridContainer = newGridContainer();
-  humanTurnIndicator = newTurnIndicator();
+  const humanRowLabelContainer = newRowLabelContainer();
+  const humanColLabelContainer = newColLabelContainer();
   cpuGridContainer = newGridContainer();
-  cpuTurnIndicator = newTurnIndicator();
+  const cpuRowLabelContainer = newRowLabelContainer();
+  const cpuColLabelContainer = newColLabelContainer();
 
   humanGridContainer.id = "human-grid-container";
+  humanRowLabelContainer.id = "human-row-label-container";
+  humanColLabelContainer.id = "human-col-label-container";
   cpuGridContainer.id = "cpu-grid-container";
-  humanTurnIndicator.textContent = "Your Turn";
+  cpuRowLabelContainer.id = "cpu-row-label-container";
+  cpuColLabelContainer.id = "cpu-col-label-container";
 
-  humanGridContainer.appendChild(humanTurnIndicator);
-  cpuGridContainer.appendChild(cpuTurnIndicator);
+  for (let i = CAPITALAINDEX; i < CAPITALAINDEX + 10; i++) {
+    const rowLabelChar = newRowLabelChar();
+    rowLabelChar.textContent = String.fromCharCode(i);
+    humanRowLabelContainer.appendChild(rowLabelChar);
+  }
+
+  for (let i = 1; i < 11; i++) {
+    const colLabelChar = newColLabelChar();
+    colLabelChar.textContent = i;
+    humanColLabelContainer.appendChild(colLabelChar);
+  }
+
+  for (let i = CAPITALAINDEX; i < CAPITALAINDEX + 10; i++) {
+    const rowLabelChar = newRowLabelChar();
+    rowLabelChar.textContent = String.fromCharCode(i);
+    cpuRowLabelContainer.appendChild(rowLabelChar);
+  }
+
+  for (let i = 1; i < 11; i++) {
+    const colLabelChar = newColLabelChar();
+    colLabelChar.textContent = i;
+    cpuColLabelContainer.appendChild(colLabelChar);
+  }
 
   humanPlayer.gameboard.board.forEach((row, rowNum) => {
     row.forEach((cell, colNum) => {
@@ -55,8 +86,12 @@ export function startNewGame() {
     });
   });
 
-  document.body.appendChild(humanGridContainer);
-  document.body.appendChild(cpuGridContainer);
+  gameContainer.appendChild(humanColLabelContainer);
+  gameContainer.appendChild(cpuColLabelContainer);
+  gameContainer.appendChild(humanRowLabelContainer);
+  gameContainer.appendChild(humanGridContainer);
+  gameContainer.appendChild(cpuRowLabelContainer);
+  gameContainer.appendChild(cpuGridContainer);
 }
 
 export function renderGameboard(controller, gridCell) {
@@ -68,6 +103,9 @@ export function renderGameboard(controller, gridCell) {
     : controller.cpuPlayer.gameboard.board[gridCell.dataset.row][
         gridCell.dataset.col
       ];
+
+  if (humanTurn) gameStatus.textContent = "Your turn";
+  else gameStatus.textContent = "CPU's turn";
 
   if (boardCell.ship) {
     gridCell.classList.add(boardCell.ship.name);
@@ -94,27 +132,16 @@ export function renderGameboard(controller, gridCell) {
     }
   } else gridCell.classList.add("miss");
 
-  if (humanTurn) {
-    humanTurnIndicator.textContent = "Your Turn";
-    cpuTurnIndicator.textContent = "";
-  } else {
-    cpuTurnIndicator.textContent = "CPU's Turn";
-    humanTurnIndicator.textContent = "";
-  }
-
   if (controller.gameOver) {
-    controller.winner === controller.humanPlayer
-      ? (humanTurnIndicator.textContent = "You Win!")
-      : (humanTurnIndicator.textContent = "");
-    controller.winner === controller.cpuPlayer
-      ? (cpuTurnIndicator.textContent = "CPU Wins")
-      : (cpuTurnIndicator.textContent = "");
+    if (controller.winner === controller.humanPlayer)
+      gameStatus.textContent = "You win!";
+    else gameStatus.textContent = "CPU wins";
   }
 }
 
 export function handleHumanClick(controller, gridCell) {
-  if (controller.gameOver) return;
-  if (controller.currentTurn !== controller.humanPlayer) return;
+  if (controller.currentTurn !== controller.humanPlayer || controller.gameOver)
+    return;
 
   const result = controller.processMove(
     controller.cpuPlayer,

@@ -1,7 +1,25 @@
-export function newTurnIndicator() {
-  const indicator = document.createElement("h3");
-  indicator.classList.add("turn-indicator");
-  return indicator;
+export function newRowLabelContainer() {
+  const container = document.createElement("div");
+  container.classList.add("row-label-container");
+  return container;
+}
+
+export function newColLabelContainer() {
+  const container = document.createElement("div");
+  container.classList.add("col-label-container");
+  return container;
+}
+
+export function newRowLabelChar() {
+  const char = document.createElement("p");
+  char.classList.add("row-label-char");
+  return char;
+}
+
+export function newColLabelChar() {
+  const char = document.createElement("p");
+  char.classList.add("col-label-char");
+  return char;
 }
 
 export function newGridContainer() {
