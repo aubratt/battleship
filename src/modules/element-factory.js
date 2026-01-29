@@ -33,3 +33,25 @@ export function newGridCell() {
   cell.classList.add("cell");
   return cell;
 }
+
+export function newOptionsContainer() {
+  const container = document.createElement("div");
+  container.id = "options-container";
+  return container;
+}
+
+export function newRandomizeShipsBtn() {
+  const btn = document.createElement("button");
+  btn.id = "randomize-ships-btn";
+  btn.classList.add("btn");
+  btn.textContent = "Randomize";
+  return btn;
+}
+
+export function newStartGameBtn() {
+  const btn = document.createElement("button");
+  btn.id = "start-game-btn";
+  btn.classList.add("btn");
+  btn.textContent = "Start Game";
+  return btn;
+}

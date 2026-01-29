@@ -7,18 +7,21 @@ import {
   newColLabelChar,
   newColLabelContainer,
   newRowLabelChar,
+  newOptionsContainer,
+  newRandomizeShipsBtn,
+  newStartGameBtn,
 } from "./element-factory";
 
-const CAPITALAINDEX = 65;
+const CAPITAL_A_INDEX = 65;
 
 const gameStatus = document.getElementById("game-status");
 const gameContainer = document.getElementById("game-container");
 let humanGridContainer;
 let cpuGridContainer;
 
-startNewGame();
+initGameSetup();
 
-export function startNewGame() {
+function initGameSetup() {
   const humanPlayer = new Player(true);
   const cpuPlayer = new Player(false);
   const controller = new Controller(humanPlayer, cpuPlayer);
@@ -26,54 +29,48 @@ export function startNewGame() {
   humanPlayer.gameboard.placeAllShipsRandomly();
   cpuPlayer.gameboard.placeAllShipsRandomly();
 
-  humanGridContainer = newGridContainer();
   const humanRowLabelContainer = newRowLabelContainer();
   const humanColLabelContainer = newColLabelContainer();
-  cpuGridContainer = newGridContainer();
   const cpuRowLabelContainer = newRowLabelContainer();
   const cpuColLabelContainer = newColLabelContainer();
 
-  humanGridContainer.id = "human-grid-container";
+  humanGridContainer = newGridContainer();
+  cpuGridContainer = newGridContainer();
+
+  const optionsContainer = newOptionsContainer();
+  const randomizeShipsBtn = newRandomizeShipsBtn();
+  const startGameBtn = newStartGameBtn();
+
   humanRowLabelContainer.id = "human-row-label-container";
   humanColLabelContainer.id = "human-col-label-container";
-  cpuGridContainer.id = "cpu-grid-container";
   cpuRowLabelContainer.id = "cpu-row-label-container";
   cpuColLabelContainer.id = "cpu-col-label-container";
 
-  for (let i = CAPITALAINDEX; i < CAPITALAINDEX + 10; i++) {
+  humanGridContainer.id = "human-grid-container";
+  cpuGridContainer.id = "cpu-grid-container";
+
+  for (let i = CAPITAL_A_INDEX; i < CAPITAL_A_INDEX + 10; i++) {
     const rowLabelChar = newRowLabelChar();
     rowLabelChar.textContent = String.fromCharCode(i);
     humanRowLabelContainer.appendChild(rowLabelChar);
   }
-
   for (let i = 1; i < 11; i++) {
     const colLabelChar = newColLabelChar();
     colLabelChar.textContent = i;
     humanColLabelContainer.appendChild(colLabelChar);
   }
-
-  for (let i = CAPITALAINDEX; i < CAPITALAINDEX + 10; i++) {
+  for (let i = CAPITAL_A_INDEX; i < CAPITAL_A_INDEX + 10; i++) {
     const rowLabelChar = newRowLabelChar();
     rowLabelChar.textContent = String.fromCharCode(i);
     cpuRowLabelContainer.appendChild(rowLabelChar);
   }
-
   for (let i = 1; i < 11; i++) {
     const colLabelChar = newColLabelChar();
     colLabelChar.textContent = i;
     cpuColLabelContainer.appendChild(colLabelChar);
   }
 
-  humanPlayer.gameboard.board.forEach((row, rowNum) => {
-    row.forEach((cell, colNum) => {
-      const gridCell = newGridCell();
-      gridCell.setAttribute("data-row", rowNum);
-      gridCell.setAttribute("data-col", colNum);
-      if (cell.ship)
-        gridCell.classList.add(cell.ship.name, cell.ship.direction, "not-hit");
-      humanGridContainer.appendChild(gridCell);
-    });
-  });
+  renderHumanSetupBoard(humanPlayer);
   cpuPlayer.gameboard.board.forEach((row, rowNum) => {
     row.forEach((cell, colNum) => {
       const gridCell = newGridCell();
@@ -86,15 +83,53 @@ export function startNewGame() {
     });
   });
 
-  gameContainer.appendChild(humanColLabelContainer);
-  gameContainer.appendChild(cpuColLabelContainer);
+  randomizeShipsBtn.addEventListener("click", () => {
+    // TODO continue trying to get this btn to work
+    humanPlayer.gameboard.board = null;
+    humanPlayer.gameboard.ships = null;
+    humanPlayer.gameboard.placeAllShipsRandomly();
+    renderHumanSetupBoard(humanPlayer);
+  });
+  startGameBtn.addEventListener("click", () => {
+    startNewGame(controller);
+  });
+
   gameContainer.appendChild(humanRowLabelContainer);
-  gameContainer.appendChild(humanGridContainer);
+  gameContainer.appendChild(humanColLabelContainer);
   gameContainer.appendChild(cpuRowLabelContainer);
+  gameContainer.appendChild(cpuColLabelContainer);
+
+  gameContainer.appendChild(humanGridContainer);
   gameContainer.appendChild(cpuGridContainer);
+
+  gameContainer.appendChild(optionsContainer);
+  optionsContainer.appendChild(randomizeShipsBtn);
+  optionsContainer.appendChild(startGameBtn);
 }
 
-export function renderGameboard(controller, gridCell) {
+function renderHumanSetupBoard(humanPlayer) {
+  humanPlayer.gameboard.board.forEach((row, rowNum) => {
+    row.forEach((cell, colNum) => {
+      let gridCell = humanGridContainer.querySelector(
+        `[data-row="${rowNum}"][data-col="${colNum}"]`,
+      );
+      if (gridCell === null) { 
+        gridCell = newGridCell();
+        gridCell.setAttribute("data-row", rowNum);
+        gridCell.setAttribute("data-col", colNum);
+      } else gridCell.className = "cell";
+      if (cell.ship)
+        gridCell.classList.add(cell.ship.name, cell.ship.direction, "not-hit");
+      humanGridContainer.appendChild(gridCell);
+    });
+  });
+}
+
+export function startNewGame(controller) {
+  controller.currentTurn = controller.humanPlayer;
+}
+
+export function renderGameplayBoards(controller, gridCell) {
   const humanTurn = controller.currentTurn === controller.humanPlayer;
   const boardCell = humanTurn
     ? controller.humanPlayer.gameboard.board[gridCell.dataset.row][
@@ -104,8 +139,9 @@ export function renderGameboard(controller, gridCell) {
         gridCell.dataset.col
       ];
 
-  if (humanTurn) gameStatus.textContent = "Your turn";
-  else gameStatus.textContent = "CPU's turn";
+  humanTurn
+    ? (gameStatus.textContent = "Your turn")
+    : (gameStatus.textContent = "CPU's Turn");
 
   if (boardCell.ship) {
     gridCell.classList.add(boardCell.ship.name);
@@ -152,7 +188,7 @@ export function handleHumanClick(controller, gridCell) {
   if (!result.valid) return;
 
   controller.nextTurn();
-  renderGameboard(controller, gridCell);
+  renderGameplayBoards(controller, gridCell);
   if (controller.currentTurn === controller.cpuPlayer)
     handleCpuTurn(controller);
 }
@@ -171,7 +207,7 @@ function handleCpuTurn(controller) {
     }
 
     controller.nextTurn();
-    renderGameboard(
+    renderGameplayBoards(
       controller,
       humanGridContainer.querySelector(
         `[data-row="${row}"][data-col="${col}"]`,

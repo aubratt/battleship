@@ -136,7 +136,7 @@ h1 {
 
 #game-container {
   display: grid;
-  grid-template: 24px 331px / 24px 331px repeat(2, 24px) 331px;
+  grid-template: 24px 331px 32px / 24px 331px repeat(2, 24px) 331px;
 }
 
 #human-col-label-container {
@@ -192,6 +192,35 @@ h1 {
   background-color: var(--clr-surface-a0);
   width: var(--sz-square);
   height: var(--sz-square);
+}
+
+#options-container {
+  grid-area: 3 / 2 / 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: var(--clr-surface-a20);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: 64px;
+}
+
+.btn {
+  all: unset;
+  cursor: pointer;
+  color: var(--clr-dark-a0);
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+#randomize-ships-btn {
+  background-color: var(--clr-primary-a0);
+}
+
+#start-game-btn {
+  background-color: var(--clr-success-a10);
 }
 
 /* not hit (human only) */

@@ -78,6 +78,12 @@ export class Gameboard {
   }
 
   placeAllShipsRandomly() {
+
+    // TODO continue trying to get the randomizer btn to work
+
+    this.board = this.createBoard();
+    this.ships = this.createShips();
+
     for (const [key, ship] of Object.entries(this.ships)) {
       ship.direction =
         getRandomInteger(1) < 1 ? DIRECTION.HORIZONTAL : DIRECTION.VERTICAL;
@@ -116,7 +122,7 @@ export class Gameboard {
           }
         }
       }
-      this.placeShip(ship, rowRandom, colRandom);
+      this.placeShip(ship, rowRandom, colRandom); 
     }
   }
 

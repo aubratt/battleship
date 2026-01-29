@@ -2,7 +2,7 @@ export class Controller {
   constructor(humanPlayer, cpuPlayer) {
     this.humanPlayer = humanPlayer;
     this.cpuPlayer = cpuPlayer;
-    this.currentTurn = humanPlayer;
+    this.currentTurn = null;
     this.turnNumber = 1;
     this.gameOver = false;
     this.winner = null;
