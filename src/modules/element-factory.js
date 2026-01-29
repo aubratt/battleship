@@ -63,3 +63,40 @@ export function newPlayAgainBtn() {
   btn.textContent = "Play Again";
   return btn;
 }
+
+export function newGameLogContainer() {
+  const container = document.createElement("div");
+  container.id = "game-log-container";
+  return container;
+}
+
+export function newGameLogHeading() {
+  const heading = document.createElement("h2");
+  heading.id = "game-log-heading";
+  heading.textContent = "Game Log";
+  return heading;
+}
+
+export function newTurnContainer() {
+  const container = document.createElement("div");
+  container.classList.add("turn-container");
+  return container;
+}
+
+export function newTurnNumberHeading() {
+  const heading = document.createElement("p");
+  heading.classList.add("turn-number-heading");
+  return heading;
+}
+
+export function newMoveContainer() {
+  const container = document.createElement("div");
+  container.classList.add("move-container");
+  return container;
+}
+
+export function newMoveText() {
+  const text = document.createElement("p");
+  text.classList.add("move-text");
+  return text;
+}

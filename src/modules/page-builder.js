@@ -11,6 +11,12 @@ import {
   newRandomizeShipsBtn,
   newStartGameBtn,
   newPlayAgainBtn,
+  newGameLogContainer,
+  newGameLogHeading,
+  newTurnNumberHeading,
+  newMoveContainer,
+  newMoveText,
+  newTurnContainer,
 } from "./element-factory";
 
 const CAPITAL_A_INDEX = 65;
@@ -20,6 +26,8 @@ const gameContainer = document.getElementById("game-container");
 let humanGridContainer;
 let optionsContainer;
 let cpuGridContainer;
+let gameLogContainer;
+let gameLogHeading;
 
 initGameSetup();
 
@@ -88,7 +96,6 @@ function initGameSetup() {
   });
 
   randomizeShipsBtn.addEventListener("click", () => {
-    // TODO continue trying to get this btn to work
     humanPlayer.gameboard.board = null;
     humanPlayer.gameboard.ships = null;
     humanPlayer.gameboard.placeAllShipsRandomly();
@@ -131,6 +138,12 @@ function renderHumanSetupBoard(humanPlayer) {
 
 export function startNewGame(controller) {
   optionsContainer.style.display = "none";
+
+  gameLogContainer = newGameLogContainer();
+  gameLogHeading = newGameLogHeading();
+  document.body.appendChild(gameLogContainer);
+  gameLogContainer.appendChild(gameLogHeading);
+
   gameStatus.textContent = "Your turn";
   controller.currentTurn = controller.humanPlayer;
 }
@@ -145,13 +158,14 @@ export function renderGameplayBoards(controller, gridCell) {
         gridCell.dataset.col
       ];
 
-  humanTurn
-    ? (gameStatus.textContent = "Your turn")
-    : (gameStatus.textContent = "CPU's Turn");
+  if (humanTurn) {
+    gameStatus.textContent = "Your turn";
+  } else {
+    gameStatus.textContent = "CPU's turn";
+  }
 
   if (boardCell.ship) {
-    gridCell.classList.add(boardCell.ship.name);
-    gridCell.classList.add("hit");
+    gridCell.classList.add(boardCell.ship.name, "hit");
     gridCell.classList.remove("not-hit");
 
     if (boardCell.ship.sunk) {
@@ -182,6 +196,69 @@ export function renderGameplayBoards(controller, gridCell) {
   }
 }
 
+function renderGameLog(controller, row, col) {
+  const humanTurn = controller.currentTurn === controller.humanPlayer;
+
+  if (!humanTurn) {
+    const turnContainer = newTurnContainer();
+    const turnNumberHeading = newTurnNumberHeading();
+
+    turnContainer.setAttribute("data-turn-number", controller.turnNumber);
+    turnNumberHeading.textContent = `Turn ${controller.turnNumber}`;
+
+    turnContainer.appendChild(turnNumberHeading);
+
+    if (controller.turnNumber > 1)
+      gameLogContainer.insertBefore(
+        turnContainer,
+        gameLogContainer.querySelector(
+          `[data-turn-number="${controller.turnNumber - 1}"]`,
+        ),
+      );
+    else gameLogContainer.appendChild(turnContainer);
+  }
+
+  const turnContainer = gameLogContainer.querySelector(
+    `[data-turn-number="${controller.turnNumber}"]`,
+  );
+  const moveContainer = newMoveContainer();
+  const moveText = newMoveText();
+
+  moveContainer.setAttribute("data-turn-number", controller.turnNumber);
+  moveContainer.setAttribute("data-move-number", humanTurn ? 2 : 1);
+
+  const player = humanTurn ? "CPU" : "You";
+  const enemy = humanTurn ? "your" : "CPU's";
+  const boardCell = humanTurn
+    ? controller.humanPlayer.gameboard.board[row][col]
+    : controller.cpuPlayer.gameboard.board[row][col];
+  const ship = boardCell.ship ? boardCell.ship.name : null;
+  const rowLetter = String.fromCharCode(CAPITAL_A_INDEX + Number(row));
+  const cell = rowLetter + (Number(col) + 1);
+
+  if (boardCell.ship) {
+    if (boardCell.ship.sunk) {
+      moveContainer.classList.add("move-sunk");
+      moveText.textContent = `${player} sunk ${enemy} ${ship} at ${cell}`;
+    } else {
+      moveContainer.classList.add("move-hit");
+      moveText.textContent = `${player} hit ${enemy} ${ship} at ${cell}`;
+    }
+  } else {
+    moveContainer.classList.add("move-miss");
+    moveText.textContent = `${player} missed at ${cell}`;
+  }
+
+  moveContainer.appendChild(moveText);
+
+  if (moveContainer.dataset.moveNumber > 1)
+    turnContainer.insertBefore(
+      moveContainer,
+      turnContainer.querySelector(`[data-move-number="1"]`),
+    );
+  else turnContainer.appendChild(moveContainer);
+}
+
 export function handleHumanClick(controller, gridCell) {
   if (controller.currentTurn !== controller.humanPlayer || controller.gameOver)
     return;
@@ -198,6 +275,7 @@ export function handleHumanClick(controller, gridCell) {
   renderGameplayBoards(controller, gridCell);
   if (controller.currentTurn === controller.cpuPlayer)
     handleCpuTurn(controller);
+  renderGameLog(controller, gridCell.dataset.row, gridCell.dataset.col);
 }
 
 function handleCpuTurn(controller) {
@@ -220,6 +298,9 @@ function handleCpuTurn(controller) {
         `[data-row="${row}"][data-col="${col}"]`,
       ),
     );
+
+    console.log(row, col);
+    renderGameLog(controller, row, col);
   }, 1000);
 }
 

@@ -3,7 +3,7 @@ export class Controller {
     this.humanPlayer = humanPlayer;
     this.cpuPlayer = cpuPlayer;
     this.currentTurn = null;
-    this.turnNumber = 1;
+    this.turnNumber = 0;
     this.gameOver = false;
     this.winner = null;
   }
@@ -23,11 +23,9 @@ export class Controller {
         : (this.winner = this.cpuPlayer);
     }
 
-    if (this.currentTurn === this.humanPlayer)
+    if (this.currentTurn === this.humanPlayer) {
       this.currentTurn = this.cpuPlayer;
-    else {
-      this.currentTurn = this.humanPlayer;
       this.turnNumber++;
-    }
+    } else this.currentTurn = this.humanPlayer;
   }
 }

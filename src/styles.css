@@ -136,7 +136,7 @@ h1 {
 
 #game-container {
   display: grid;
-  grid-template: 24px 331px 32px / 24px 331px repeat(2, 24px) 331px;
+  grid-template: 24px 331px / 24px 331px repeat(2, 24px) 331px;
 }
 
 #human-col-label-container {
@@ -222,6 +222,44 @@ h1 {
 
 #start-game-btn {
   background-color: var(--clr-success-a10);
+}
+
+/* game log */
+#game-log-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  gap: 8px;
+  width: 734px;
+  padding: 8px 0px 0px 24px;
+}
+
+.turn-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.turn-number-heading {
+  border-bottom: 1px solid var(--clr-surface-a20);
+}
+
+.move-container {
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.move-miss {
+  background-color: var(--clr-surface-a10);
+}
+
+.move-hit {
+  background-color: var(--clr-danger-a10);
+  color: var(--clr-dark-a0);
+}
+
+.move-sunk {
+  background-color: var(--clr-sunk-bg);
 }
 
 /* not hit (human only) */

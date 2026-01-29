@@ -78,9 +78,6 @@ export class Gameboard {
   }
 
   placeAllShipsRandomly() {
-
-    // TODO continue trying to get the randomizer btn to work
-
     this.board = this.createBoard();
     this.ships = this.createShips();
 
