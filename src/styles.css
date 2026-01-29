@@ -215,7 +215,8 @@ h1 {
   padding: 4px 8px;
 }
 
-#randomize-ships-btn {
+#randomize-ships-btn,
+#play-again-btn {
   background-color: var(--clr-primary-a0);
 }
 

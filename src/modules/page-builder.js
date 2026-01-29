@@ -10,6 +10,7 @@ import {
   newOptionsContainer,
   newRandomizeShipsBtn,
   newStartGameBtn,
+  newPlayAgainBtn,
 } from "./element-factory";
 
 const CAPITAL_A_INDEX = 65;
@@ -17,6 +18,7 @@ const CAPITAL_A_INDEX = 65;
 const gameStatus = document.getElementById("game-status");
 const gameContainer = document.getElementById("game-container");
 let humanGridContainer;
+let optionsContainer;
 let cpuGridContainer;
 
 initGameSetup();
@@ -37,7 +39,7 @@ function initGameSetup() {
   humanGridContainer = newGridContainer();
   cpuGridContainer = newGridContainer();
 
-  const optionsContainer = newOptionsContainer();
+  optionsContainer = newOptionsContainer();
   const randomizeShipsBtn = newRandomizeShipsBtn();
   const startGameBtn = newStartGameBtn();
 
@@ -48,6 +50,8 @@ function initGameSetup() {
 
   humanGridContainer.id = "human-grid-container";
   cpuGridContainer.id = "cpu-grid-container";
+
+  gameStatus.textContent = "Set your board";
 
   for (let i = CAPITAL_A_INDEX; i < CAPITAL_A_INDEX + 10; i++) {
     const rowLabelChar = newRowLabelChar();
@@ -113,7 +117,7 @@ function renderHumanSetupBoard(humanPlayer) {
       let gridCell = humanGridContainer.querySelector(
         `[data-row="${rowNum}"][data-col="${colNum}"]`,
       );
-      if (gridCell === null) { 
+      if (gridCell === null) {
         gridCell = newGridCell();
         gridCell.setAttribute("data-row", rowNum);
         gridCell.setAttribute("data-col", colNum);
@@ -126,6 +130,8 @@ function renderHumanSetupBoard(humanPlayer) {
 }
 
 export function startNewGame(controller) {
+  optionsContainer.style.display = "none";
+  gameStatus.textContent = "Your turn";
   controller.currentTurn = controller.humanPlayer;
 }
 
@@ -172,6 +178,7 @@ export function renderGameplayBoards(controller, gridCell) {
     if (controller.winner === controller.humanPlayer)
       gameStatus.textContent = "You win!";
     else gameStatus.textContent = "CPU wins";
+    showPlayAgainBtn();
   }
 }
 
@@ -214,4 +221,18 @@ function handleCpuTurn(controller) {
       ),
     );
   }, 1000);
+}
+
+function showPlayAgainBtn() {
+  const playAgainBtn = newPlayAgainBtn();
+  optionsContainer.appendChild(playAgainBtn);
+  optionsContainer.removeChild(
+    optionsContainer.querySelector("#randomize-ships-btn"),
+  );
+  optionsContainer.removeChild(
+    optionsContainer.querySelector("#start-game-btn"),
+  );
+  optionsContainer.style.display = "flex";
+
+  playAgainBtn.addEventListener("click", initGameSetup);
 }

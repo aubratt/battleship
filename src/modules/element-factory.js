@@ -55,3 +55,11 @@ export function newStartGameBtn() {
   btn.textContent = "Start Game";
   return btn;
 }
+
+export function newPlayAgainBtn() {
+  const btn = document.createElement("button");
+  btn.id = "play-again-btn";
+  btn.classList.add("btn");
+  btn.textContent = "Play Again";
+  return btn;
+}
