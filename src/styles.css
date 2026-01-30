@@ -121,6 +121,7 @@ body {
 
 h1 {
   margin: 16px;
+  margin-left: 40px;
 }
 
 /* gameboards */
@@ -129,8 +130,9 @@ h1 {
   color: var(--clr-dark-a0);
   border-radius: 8px;
   text-align: center;
-  width: 734px;
+  width: 710px;
   margin-bottom: 16px;
+  margin-left: 24px;
   padding: 8px 16px;
 }
 
@@ -231,7 +233,11 @@ h1 {
   justify-content: start;
   gap: 8px;
   width: 734px;
-  padding: 8px 0px 0px 24px;
+  padding: 8px 0px 24px 24px;
+}
+
+#game-log-heading {
+  margin-bottom: -8px;
 }
 
 .turn-container {

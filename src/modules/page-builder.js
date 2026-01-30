@@ -47,7 +47,7 @@ function initGameSetup() {
   humanGridContainer = newGridContainer();
   cpuGridContainer = newGridContainer();
 
-  optionsContainer = newOptionsContainer();
+  if (!optionsContainer) optionsContainer = newOptionsContainer();
   const randomizeShipsBtn = newRandomizeShipsBtn();
   const startGameBtn = newStartGameBtn();
 
@@ -137,7 +137,8 @@ function renderHumanSetupBoard(humanPlayer) {
 }
 
 export function startNewGame(controller) {
-  optionsContainer.style.display = "none";
+  // optionsContainer.style.display = "none";
+  optionsContainer.remove();
 
   gameLogContainer = newGameLogContainer();
   gameLogHeading = newGameLogHeading();
@@ -299,21 +300,20 @@ function handleCpuTurn(controller) {
       ),
     );
 
-    console.log(row, col);
     renderGameLog(controller, row, col);
   }, 1000);
 }
 
 function showPlayAgainBtn() {
   const playAgainBtn = newPlayAgainBtn();
+  optionsContainer = newOptionsContainer();
   optionsContainer.appendChild(playAgainBtn);
-  optionsContainer.removeChild(
-    optionsContainer.querySelector("#randomize-ships-btn"),
-  );
-  optionsContainer.removeChild(
-    optionsContainer.querySelector("#start-game-btn"),
-  );
   optionsContainer.style.display = "flex";
+  gameContainer.appendChild(optionsContainer);
 
-  playAgainBtn.addEventListener("click", initGameSetup);
+  playAgainBtn.addEventListener("click", () => {
+    gameLogContainer.remove();
+    playAgainBtn.remove();
+    initGameSetup();
+  });
 }
