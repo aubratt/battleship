@@ -1,4 +1,4 @@
-import { Player, getRandomInteger } from "./classes";
+import { DIRECTION, Player, getRandomInteger } from "./classes";
 import { Controller } from "./game-controller";
 import {
   newGridContainer,
@@ -281,14 +281,58 @@ export function handleHumanClick(controller, gridCell) {
 
 function handleCpuTurn(controller) {
   if (controller.gameOver) return;
+
   setTimeout(() => {
-    let row = getRandomInteger(9);
-    let col = getRandomInteger(9);
+    let row = -1;
+    let col = -1;
     let result = controller.processMove(controller.humanPlayer, row, col);
 
     while (!result.valid) {
-      row = getRandomInteger(9);
-      col = getRandomInteger(9);
+      let shipHitCells = controller.humanPlayer.gameboard.board
+        .flat()
+        .filter((cell) => cell.ship && cell.hit && !cell.ship.sunk);
+
+      if (shipHitCells.length > 0) {
+        let targetShip = null;
+        for (const [key, ship] of Object.entries(
+          controller.humanPlayer.gameboard.ships,
+        )) {
+          if (ship.hitCount > 1 && !ship.sunk) {
+            targetShip = ship;
+            break;
+          }
+        }
+
+        let targetCell;
+        let hitHorizontalAdjacent;
+
+        if (targetShip) {
+          shipHitCells = shipHitCells.filter(
+            (cell) => cell.ship.name === targetShip.name,
+          );
+        } else {
+          hitHorizontalAdjacent = getRandomInteger(2) < 2 ? true : false;
+        }
+
+        targetCell = shipHitCells[getRandomInteger(shipHitCells.length - 1)];
+
+        if (
+          targetCell.ship.direction === DIRECTION.HORIZONTAL ||
+          hitHorizontalAdjacent
+        ) {
+          row = targetCell.row;
+          col =
+            getRandomInteger(2) < 2 ? targetCell.col - 1 : targetCell.col + 1;
+        } else {
+          row =
+            getRandomInteger(2) < 2 ? targetCell.row - 1 : targetCell.row + 1;
+          col = targetCell.col;
+        }
+      } else {
+        row = getRandomInteger(9);
+        col = getRandomInteger(9);
+      }
+
       result = controller.processMove(controller.humanPlayer, row, col);
     }
 
@@ -307,8 +351,10 @@ function handleCpuTurn(controller) {
 function showPlayAgainBtn() {
   const playAgainBtn = newPlayAgainBtn();
   optionsContainer = newOptionsContainer();
-  optionsContainer.appendChild(playAgainBtn);
+
   optionsContainer.style.display = "flex";
+
+  optionsContainer.appendChild(playAgainBtn);
   gameContainer.appendChild(optionsContainer);
 
   playAgainBtn.addEventListener("click", () => {

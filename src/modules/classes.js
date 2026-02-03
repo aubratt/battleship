@@ -1,4 +1,4 @@
-const DIRECTION = {
+export const DIRECTION = {
   HORIZONTAL: "horizontal",
   VERTICAL: "vertical",
 };
@@ -38,6 +38,8 @@ export class Gameboard {
       board[row] = [];
       for (let col = 0; col < this.height; col++) {
         board[row][col] = {
+          row,
+          col,
           ship: null,
           hit: false,
         };
@@ -119,11 +121,14 @@ export class Gameboard {
           }
         }
       }
-      this.placeShip(ship, rowRandom, colRandom); 
+      this.placeShip(ship, rowRandom, colRandom);
     }
   }
 
   receiveAttack(row, col) {
+    if (row < 0 || row > this.height - 1 || col < 0 || col > this.width - 1)
+      return { valid: false };
+
     const cell = this.board[row][col];
 
     if (cell.hit) return { valid: false };
